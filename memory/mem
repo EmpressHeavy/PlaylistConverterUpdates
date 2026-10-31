@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+import sqlite3,sys,os
+DB=os.environ.get('MEM_DB','/workspace/memory/brain.db')
+BK=os.environ.get('MEM_BACKUP_DIR',os.path.join(os.path.dirname(DB),'backup'))
+REPO=os.environ.get('MEM_REPO','')  # OWNER/REPO, else read from BK/.repo
+def backup():
+  # dump + private-checked push; never raises, logs to BK/backup.log
+  import subprocess,datetime
+  def L(msg):
+    try:open(os.path.join(BK,'backup.log'),'a').write(datetime.datetime.now().isoformat(timespec='seconds')+' '+msg+'\n')
+    except Exception:pass
+  try:
+    os.makedirs(BK,exist_ok=True)
+    r=REPO or (open(os.path.join(BK,'.repo')).read().strip() if os.path.exists(os.path.join(BK,'.repo')) else '')
+    k2=sqlite3.connect(DB);open(os.path.join(BK,'brain.sql'),'w').write('\n'.join(k2.iterdump())+'\n');k2.close()
+    if not r or not os.path.isdir(os.path.join(BK,'.git')):L('dumped; no repo configured');return
+    v=subprocess.run(['gh','repo','view',r,'--json','visibility','-q','.visibility'],capture_output=True,text=True,timeout=30).stdout.strip()
+    if v!='PRIVATE':L('NOT pushed: visibility='+repr(v));return
+    g=lambda *x:subprocess.run(['git','-C',BK]+list(x),capture_output=True,text=True,timeout=60)
+    g('add','brain.sql')
+    if g('diff','--cached','--quiet').returncode==0:L('no change');return
+    g('commit','-q','-m','memory backup '+datetime.datetime.now().isoformat(timespec='seconds'))
+    p=g('push','-q','origin','HEAD:main')
+    L('pushed' if p.returncode==0 else 'push failed: '+p.stderr.strip()[:200])
+  except Exception as e:L('backup error: '+str(e)[:200])
+S='''CREATE TABLE IF NOT EXISTS fact(id INTEGER PRIMARY KEY,subject TEXT,predicate TEXT,value TEXT,valid_from TEXT DEFAULT(date('now')),valid_to TEXT);
+CREATE TABLE IF NOT EXISTS rule(id INTEGER PRIMARY KEY,text TEXT,set_on TEXT DEFAULT(date('now')),active INT DEFAULT 1);
+CREATE TABLE IF NOT EXISTS project(id INTEGER PRIMARY KEY,title TEXT,status TEXT,notes TEXT,updated TEXT DEFAULT(date('now')));
+CREATE TABLE IF NOT EXISTS log(id INTEGER PRIMARY KEY,ts TEXT DEFAULT(datetime('now','localtime')),kind TEXT,summary TEXT);'''
+def c():
+  k=sqlite3.connect(DB,isolation_level=None);k.execute('PRAGMA journal_mode=WAL');return k
+def show(cur):
+  for r in cur.fetchall():print('|'.join('' if v is None else str(v) for v in r))
+a=sys.argv[1:];k=c()
+if not a:sys.exit('init|boot|q SQL|fact SUBJ PRED VALUE|rule TEXT|project TITLE STATUS [NOTES]|log KIND SUMMARY|find WORD|backup')
+m=a[0]
+if m=='init':k.executescript(S);os.chmod(DB,0o600);print('ok')
+elif m=='boot':
+  print('RULES:');show(k.execute('SELECT id,text FROM rule WHERE active=1'))
+  print('PROJECTS:');show(k.execute("SELECT id,title,status FROM project WHERE status NOT IN('done','closed')"))
+  print('FACTS:');show(k.execute('SELECT subject,predicate,value FROM fact WHERE valid_to IS NULL'))
+elif m=='q':k.execute('PRAGMA query_only=ON');show(k.execute(' '.join(a[1:])))
+elif m=='fact':
+  k.execute('BEGIN IMMEDIATE');k.execute("UPDATE fact SET valid_to=date('now') WHERE subject=? AND predicate=? AND valid_to IS NULL",a[1:3])
+  k.execute('INSERT INTO fact(subject,predicate,value) VALUES(?,?,?)',(a[1],a[2],' '.join(a[3:])));k.execute('COMMIT');print('ok')
+elif m=='rule':k.execute('INSERT INTO rule(text) VALUES(?)',(' '.join(a[1:]),));print('ok')
+elif m=='project':k.execute('INSERT INTO project(title,status,notes) VALUES(?,?,?)',(a[1],a[2],' '.join(a[3:])));print('ok')
+elif m=='log':k.execute('INSERT INTO log(kind,summary) VALUES(?,?)',(a[1],' '.join(a[2:])));print('ok')
+elif m=='find':
+  w='%'+' '.join(a[1:])+'%'
+  for t,cols in(('fact',"subject||' '||predicate||' '||value"),('rule','text'),('project',"title||' '||status||' '||coalesce(notes,'')"),('log','summary')):
+    show(k.execute(f"SELECT '{t}',id,{cols} FROM {t} WHERE {cols} LIKE ?",(w,)))
+elif m=='backup':backup();print('ok')
+else:sys.exit('unknown cmd')
+if m in('fact','rule','project','log','lesson'):k.close();backup()

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Playlist Converter hive wrapper: uses this bot's memory, backs up after lesson/feedback writes.
+MEM_DB=/workspace/memory/brain.db python3 /workspace/memory/hive.py "$@"; rc=$?
+case "$1" in lesson|feedback) /workspace/memory/mem backup >/dev/null 2>&1 ;; esac
+exit $rc
