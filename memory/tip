@@ -1,0 +1,5 @@
+#!/bin/sh
+# Playlist Converter tip counter. Local brain.db only: no network and no backup push.
+MEM_DB=/workspace/memory/brain.db
+export MEM_DB
+exec python3 /workspace/memory/tip.py "$@"

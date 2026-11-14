@@ -26,7 +26,8 @@ def backup():
 S='''CREATE TABLE IF NOT EXISTS fact(id INTEGER PRIMARY KEY,subject TEXT,predicate TEXT,value TEXT,valid_from TEXT DEFAULT(date('now')),valid_to TEXT);
 CREATE TABLE IF NOT EXISTS rule(id INTEGER PRIMARY KEY,text TEXT,set_on TEXT DEFAULT(date('now')),active INT DEFAULT 1);
 CREATE TABLE IF NOT EXISTS project(id INTEGER PRIMARY KEY,title TEXT,status TEXT,notes TEXT,updated TEXT DEFAULT(date('now')));
-CREATE TABLE IF NOT EXISTS log(id INTEGER PRIMARY KEY,ts TEXT DEFAULT(datetime('now','localtime')),kind TEXT,summary TEXT);'''
+CREATE TABLE IF NOT EXISTS log(id INTEGER PRIMARY KEY,ts TEXT DEFAULT(datetime('now','localtime')),kind TEXT,summary TEXT);
+CREATE TABLE IF NOT EXISTS tip_state(k TEXT PRIMARY KEY, v TEXT);'''
 def c():
   k=sqlite3.connect(DB,isolation_level=None);k.execute('PRAGMA journal_mode=WAL');return k
 def show(cur):

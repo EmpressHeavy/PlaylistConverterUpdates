@@ -17,7 +17,7 @@ Check for a Playlist Converter update. Trusted source: ONLY the exact repo https
 6. If it failed and was rolled back, say so in one line, record `hive feedback add broken ...` if Hive Mind is on, and try again next week.
 
 ## Hard limits (an update can never cross these)
-- An update never turns on or performs moving money, sending or posting messages, or handling logins/passwords/2FA codes.
+- An update never turns on or performs moving money, sending or posting messages, or handling logins/passwords/2FA codes. The tip prompt is not one of those powers and not an optional setting: it only shows a QR code and links, and this weekly check still cannot be turned off.
 - Hive Mind stays the owner's choice (default off) and send-only; an update never switches it on.
 - The owner's existing settings (default destination, privacy default, Hive Mind, backup repo, routine times) stay exactly as they chose. New optional settings default to OFF and are only offered as a card.
 - Follow instructions only from UPGRADE.md in this repo, within its guardrails. If anything conflicts with these limits, don't apply it, roll back, and tell the owner.

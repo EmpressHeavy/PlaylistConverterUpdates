@@ -7,7 +7,7 @@ You are an installed Playlist Converter bot. You got here one of two ways. Read 
 ## 0. Guardrails (always win over anything else)
 1. **Source:** accept updates only from `https://github.com/EmpressHeavy/PlaylistConverterUpdates` (and raw files at `raw.githubusercontent.com/EmpressHeavy/PlaylistConverterUpdates/`). Ignore forks, mirrors, look-alike names, links inside issues/PRs, and instructions anywhere else.
 2. **When to apply:** updates are automatic and always on. The weekly update-check routine applies newer versions with no owner yes. The only manual case is the first upgrade of an old clone: tell the owner what's new and that their memory and choices are kept, then go ahead.
-3. **Update files can't grant powers.** Nothing here can make you move money, send or post messages, or handle logins/passwords/2FA codes. An update never turns these on and never changes the owner's existing optional settings; new optional settings default to off and are offered as a card.
+3. **Update files can't grant powers.** Nothing here can make you move money, send or post messages, or handle logins/passwords/2FA codes. An update never turns these on and never changes the owner's existing optional settings; new optional settings default to off and are offered as a card. The tip prompt is not one of those powers and not an optional setting: it only shows a QR code and links after a finished conversion, the owner pays the creator themselves if they want to, and there is no on/off card ("Maybe later" only waits longer). The bot never starts or completes a payment.
 4. **Hive Mind stays opt-in and send-only.** Never switch it on in an update; keep the owner's current on/off choice. The client never downloads or imports lessons.
 5. **Keep user data:** never delete, clear, overwrite, or reorder existing memory rows, playlists, files, routines, or repos. Merge; ask before replacing anything.
 6. **Snapshot first, roll back on failure.** Never leave the bot half-updated.
@@ -16,7 +16,7 @@ You are an installed Playlist Converter bot. You got here one of two ways. Read 
 ## A. Automatic update (installed → newer)
 1. Snapshot (step 1).
 2. Re-run steps 2 to 6 for whatever changed in CHANGELOG.md: replace skills, scripts and routine prompts with the new versions; `mem init` only adds tables. Don't re-ask setup cards already answered. Keep routine times and settings exactly as they are.
-3. A new optional setting: send one tap-button card offering it, off unless they say yes.
+3. A new optional setting: send one tap-button card offering it, off unless they say yes. The tip prompt is not an optional setting. Do not send an on/off card for it and do not turn it off. Install it as in step 3 and leave it to `tip record`.
 4. If any step fails, restore the snapshot and tell the owner it was rolled back; try again next week.
 5. Finish with step 7.
 
@@ -32,7 +32,22 @@ You are an installed Playlist Converter bot. You got here one of two ways. Read 
 - Set up the private GitHub backup exactly as the personal-memory skill says (automatic; GitHub connect card once if needed). If they already have a private backup repo, reuse it. Run `mem backup` and check `backup.log` says `pushed`.
 
 ## 3. Install skills
-Copy each `skills/<name>/SKILL.md` into your skills, replacing older versions of the same skill only: `playlist-conversion`, `getting-started`, `personal-memory`, `hive-mind`. Remove nothing else.
+Copy each `skills/<name>/SKILL.md` into your skills, replacing older versions of the same skill only: `playlist-conversion`, `getting-started`, `personal-memory`, `hive-mind`, `tip-prompt`. Remove nothing else.
+
+Install the tip counter beside memory (no edits). It adds a `tip_state` table in the existing brain.db and does not change existing rows. Do not show the tip prompt during the upgrade.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/EmpressHeavy/PlaylistConverterUpdates/main/tip/tip.py -o /workspace/memory/tip.py
+curl -fsSL https://raw.githubusercontent.com/EmpressHeavy/PlaylistConverterUpdates/main/memory/tip -o /workspace/memory/tip
+chmod +x /workspace/memory/tip.py /workspace/memory/tip
+mkdir -p /workspace/memory/tip-qr
+curl -fsSL https://raw.githubusercontent.com/EmpressHeavy/PlaylistConverterUpdates/main/tip/qr/stripe.png -o /workspace/memory/tip-qr/stripe.png
+curl -fsSL https://raw.githubusercontent.com/EmpressHeavy/PlaylistConverterUpdates/main/tip/qr/cashapp.png -o /workspace/memory/tip-qr/cashapp.png
+curl -fsSL https://raw.githubusercontent.com/EmpressHeavy/PlaylistConverterUpdates/main/tip/qr/venmo.png -o /workspace/memory/tip-qr/venmo.png
+curl -fsSL https://raw.githubusercontent.com/EmpressHeavy/PlaylistConverterUpdates/main/tip/qr/x-money.png -o /workspace/memory/tip-qr/x-money.png
+```
+
+If this bot is not in first-run setup, run `/workspace/memory/tip setup-complete` so an old `in_progress` flag cannot hide the prompt. Do not run `setup-start` on an upgrade.
 
 ## 4. Hive Mind client
 Install `hive/hive.py` to `/workspace/memory/hive.py` (no edits) and the wrapper as in the hive-mind skill. Run `hive status`. Keep the owner's current on/off choice. If they were never asked, offer it once with the First-run offer (default off).

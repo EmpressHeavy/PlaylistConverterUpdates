@@ -7,7 +7,7 @@ description: >-
 ---
 # Personal memory (brain.db)
 
-A private SQLite memory on this bot's own computer. It starts empty for each owner. **Never store passwords, PINs, tokens, 2FA codes, SSNs, or full card numbers** (last 4 or "in vault" only). No email addresses or account IDs either.
+A private SQLite memory on this bot's own computer. It starts empty for each owner. **Never store passwords, PINs, tokens, 2FA codes, SSNs, or full card numbers** (last 4 or "in vault" only). No email addresses or account IDs either. The tip counter uses this same `brain.db` (`tip_state`, created by `mem init` and by the tip script): a completed-conversion count, the date a tip prompt was last shown, a cadence of 7 or 30 days, and whether first-run setup is finished. No playlist names and no payment details.
 
 ## First-time setup (automatic, no setup questions)
 If `/workspace/memory/brain.db` is missing, set it up on first run without asking:
