@@ -109,23 +109,41 @@ class CliTests(unittest.TestCase):
         nxt = parse(self.run_tip('record', '--date', week.isoformat()).stdout)
         self.assertEqual(nxt['show'], 'yes')
         self.assertEqual(nxt['last_shown'], week.isoformat())
-        # Dismissing, Maybe later, and Remind me monthly are the same command.
+        # Maybe later keeps the weekly cadence and does not count another conversion.
         snooze = parse(self.run_tip('later', '--date', week.isoformat()).stdout)
         self.assertEqual(snooze['show'], 'no')
         self.assertEqual(snooze['reason'], 'later')
-        self.assertEqual(snooze['cadence_days'], '30')
-        self.assertEqual(snooze['conversions'], '6')  # later does not count a conversion
-        too_soon = week + datetime.timedelta(days=7)
-        self.assertEqual(parse(self.run_tip('record', '--date', too_soon.isoformat()).stdout)['reason'], 'cadence')
-        month = week + datetime.timedelta(days=30)
-        monthly = parse(self.run_tip('record', '--date', month.isoformat()).stdout)
-        self.assertEqual(monthly['show'], 'yes')
-        self.assertEqual(monthly['cadence_days'], '30')
-        # The slower cadence sticks. Showing again does not return to 7 days.
-        still = parse(self.run_tip('record', '--date', (month + datetime.timedelta(days=7)).isoformat()).stdout)
-        self.assertEqual(still['show'], 'no')
-        self.assertEqual(still['reason'], 'cadence')
-        self.assertEqual(still['cadence_days'], '30')
+        self.assertEqual(snooze['cadence_days'], '7')
+        self.assertEqual(snooze['conversions'], '6')
+        self.assertEqual(parse(self.run_tip('record', '--date', (week + datetime.timedelta(days=6)).isoformat()).stdout)['reason'], 'cadence')
+        again_week = parse(self.run_tip('record', '--date', (week + datetime.timedelta(days=7)).isoformat()).stdout)
+        self.assertEqual(again_week['show'], 'yes')
+        self.assertEqual(again_week['cadence_days'], '7')
+
+    def test_remind_monthly_and_dismiss_wait_thirty_days(self):
+        day0 = datetime.date(2026, 11, 1)
+        for _ in range(3):
+            self.run_tip('record', '--date', day0.isoformat())
+        # Dismissing without a button is the monthly command.
+        dismissed = parse(self.run_tip('monthly', '--date', day0.isoformat()).stdout)
+        self.assertEqual(dismissed['show'], 'no')
+        self.assertEqual(dismissed['reason'], 'monthly')
+        self.assertEqual(dismissed['cadence_days'], '30')
+        self.assertEqual(dismissed['conversions'], '3')
+        self.assertEqual(parse(self.run_tip('record', '--date', (day0 + datetime.timedelta(days=7)).isoformat()).stdout)['reason'], 'cadence')
+        self.assertEqual(parse(self.run_tip('record', '--date', (day0 + datetime.timedelta(days=29)).isoformat()).stdout)['reason'], 'cadence')
+        month = day0 + datetime.timedelta(days=30)
+        shown = parse(self.run_tip('record', '--date', month.isoformat()).stdout)
+        self.assertEqual(shown['show'], 'yes')
+        self.assertEqual(shown['cadence_days'], '30')
+        # Maybe later on a later visit returns to next week, even after a monthly gap.
+        back = parse(self.run_tip('later', '--date', month.isoformat()).stdout)
+        self.assertEqual(back['cadence_days'], '7')
+        self.assertEqual(back['reason'], 'later')
+        self.assertEqual(parse(self.run_tip('record', '--date', (month + datetime.timedelta(days=6)).isoformat()).stdout)['show'], 'no')
+        nxt = parse(self.run_tip('record', '--date', (month + datetime.timedelta(days=7)).isoformat()).stdout)
+        self.assertEqual(nxt['show'], 'yes')
+        self.assertEqual(nxt['cadence_days'], '7')
 
     def test_setup_hides_the_prompt_and_does_not_burn_the_date(self):
         p = self.run_tip('setup-start')
@@ -223,9 +241,16 @@ class CopyTests(unittest.TestCase):
                 self.assertIn(label, text)
         self.assertIn(generate_qr.HANDLE, skill)
         self.assertIn(generate_qr.HANDLE, card)
-        self.assertIn('"Maybe later"', card)
+        for label in generate_qr.BUTTONS:
+            self.assertIn(label, skill)
+            self.assertIn(label, card)
+            self.assertIn(label, playlist)
+        self.assertIn(generate_qr.LATER_REPLY, skill)
+        self.assertIn(generate_qr.LATER_REPLY, card)
+        self.assertIn(generate_qr.MONTHLY_REPLY, skill)
+        self.assertIn(generate_qr.MONTHLY_REPLY, card)
         block = card.split('```json', 1)[1].split('```', 1)[0]
-        self.assertIn('"Maybe later"', block)
+        self.assertLess(block.index('"Maybe later"'), block.index('"Remind me monthly"'))
         self.assertNotIn("Don't ask again", block)
         self.assertNotIn('opt out', block.lower())
         # First-run copy must not recite the tip ask.

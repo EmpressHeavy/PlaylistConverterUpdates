@@ -16,6 +16,6 @@ After that, updates are **automatic and always on**: once a week the bot checks 
 - Your memory is never overwritten. A snapshot is taken before every update and rolled back if anything fails.
 
 ## Tips
-Playlist Converter stays free. After a few finished conversions it may ask, once in a while, if you'd like to tip the creator. Maybe later asks again in about a month. There isn't a "don't ask again" switch, and the bot never takes a payment itself.
+Playlist Converter stays free. After a few finished conversions it may ask, once in a while, if you'd like to tip the creator. Maybe later asks again next week. Remind me monthly, or dismissing the prompt, asks again in about a month. There isn't a "don't ask again" switch, and the bot never takes a payment itself.
 
 Full component map: [PARITY.md](PARITY.md). Current version: [VERSION](VERSION). Changes: [CHANGELOG.md](CHANGELOG.md).

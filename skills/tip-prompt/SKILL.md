@@ -54,18 +54,20 @@ What to send, in this order, when `show=yes`:
    - Venmo: https://venmo.com/u/EmpressHeavy
    - X Money: @HeavyMetalShip (https://x.com/HeavyMetalShip)
 5. One line: Playlist Converter stays free either way.
-6. The card in `docs/tip-prompt.md`. Its only button is "Maybe later".
+6. The card in `docs/tip-prompt.md`. Two buttons, side by side: "Maybe later" and "Remind me monthly". There is no "Don't ask again".
 
 The other QR files (Cash App, Venmo, X Money) are in the repo and installed next to the Stripe one. The message uses the Stripe QR plus the four links.
 
 Do not wait on the tip before you send the playlist link, the counts, or the keep/delete and sign-out questions. Do not block or slow the conversion for this.
 
-## Maybe later / remind me monthly / dismissed
+## Maybe later / Remind me monthly / dismissed
 There is no "Don't ask again" option. Do not invent one, and do not store a permanent opt-out.
 
-If they choose "Maybe later", say "remind me monthly" or "not now", or dismiss the card, or move on to another request without opening a tip link: run `/workspace/memory/tip later` and say "No problem. I'll mention it again in about a month. Playlist Converter stays free." That switches the cadence to at most once every 30 days. It stays monthly after that. It does not turn the prompt off.
+- "Maybe later" (the button, or they say "maybe later" or "not now"): run `/workspace/memory/tip later`. That keeps the 7-day cadence, so it can show again next week. Say: "No problem. I'll mention it again next week. Playlist Converter stays free."
+- "Remind me monthly" (the button, or they say "remind me monthly"): run `/workspace/memory/tip monthly`. That switches to at most once every 30 days. Say: "No problem. I'll mention it again in about a month. Playlist Converter stays free."
+- Dismissing the card, or moving on to another request without picking a button and without opening a tip link, is the monthly choice. Run `/workspace/memory/tip monthly`. If the conversation is still open, say the monthly line above. It does not turn the prompt off.
 
-If they open a tip link, say a short thanks. Do not run `tip later`. The 7-day cadence stays. Do not ask whether the payment went through.
+If they open a tip link, say a short thanks. Do not run `tip later` or `tip monthly`. Do not ask whether the payment went through.
 
 ## Rules
 - Never show this during the getting-started cards, the Hive Mind offer, or the first-run setup conversation's scripted steps.

@@ -16,14 +16,20 @@ Then show the QR image `/workspace/memory/tip-qr/stripe.png` (the Stripe link). 
 Then one line: Playlist Converter stays free either way.
 
 ## Card
-One button only. There is no "Don't ask again" option.
+Two buttons, side by side. There is no "Don't ask again" option.
 
 ```json
-{"question": "Wow you seem to be using Playlist Converter a lot lately! Would you mind sending my creator a tip? 🪙", "options": ["Maybe later"]}
+{"question": "Wow you seem to be using Playlist Converter a lot lately! Would you mind sending my creator a tip? 🪙", "options": ["Maybe later", "Remind me monthly"]}
 ```
 
-"Maybe later" means remind monthly. Saying "remind me monthly", "not now", or dismissing the card is the same choice: run `/workspace/memory/tip later` and say:
+"Maybe later" keeps the 7-day cadence (shows again next week). Run `/workspace/memory/tip later` and say:
+
+No problem. I'll mention it again next week. Playlist Converter stays free.
+
+"Remind me monthly" switches to at most once every 30 days. Run `/workspace/memory/tip monthly` and say:
 
 No problem. I'll mention it again in about a month. Playlist Converter stays free.
 
-Opening a tip link is not that choice. Say a short thanks and leave the weekly cadence as it is.
+Dismissing the prompt without picking a button is the monthly choice: run `/workspace/memory/tip monthly` and, if the conversation is still open, say the monthly line above. It does not turn the prompt off.
+
+Opening a tip link is neither choice. Say a short thanks and do not run `tip later` or `tip monthly`.

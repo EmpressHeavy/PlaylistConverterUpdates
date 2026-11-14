@@ -9,7 +9,8 @@ The counter lives in the owner's existing `brain.db` (`tip_state`): completed-co
 | What counts | One `tip record` per finished playlist conversion. Scans, reads, and failed builds are not counted. |
 | First prompt | After 3 completed conversions, right after that conversion's summary. |
 | Then | At most once every 7 days. |
-| Maybe later / remind me monthly / dismiss | `tip later` switches the cadence to at most once every 30 days. There is no permanent opt-out and no "Don't ask again". |
+| Maybe later | `tip later` keeps the 7-day cadence, so the prompt can show again next week. |
+| Remind me monthly / dismiss | `tip monthly` switches to at most once every 30 days. Dismissing without picking a button does this too. There is no "Don't ask again" and no permanent opt-out. |
 | First-run setup | `tip setup-start` hides the prompt. `tip setup-complete` lifts that. A missing flag counts as finished, so an upgrade is not stuck in setup. |
 
 `tip record` does not use the network and does not push the memory backup. Install steps: `skills/tip-prompt/SKILL.md`. Verbatim prompt: `docs/tip-prompt.md`.

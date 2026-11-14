@@ -4,9 +4,9 @@
 Stores a few rows in the same SQLite file as mem (MEM_DB, default
 /workspace/memory/brain.db), table tip_state. Stdlib only. No network.
 
-record / later / status / setup-start / setup-complete always exit 0.
-A database problem prints show=no and reason=error so a conversion is never
-blocked. There is no command that turns the prompt off for good.
+record / later / monthly / status / setup-start / setup-complete always
+exit 0. A database problem prints show=no and reason=error so a conversion
+is never blocked. There is no command that turns the prompt off for good.
 """
 import datetime, os, sqlite3, sys
 
@@ -15,7 +15,8 @@ FIRST_COUNT = 3
 WEEK = 7
 MONTH = 30
 USAGE = ('tip record [--date YYYY-MM-DD] | later [--date YYYY-MM-DD] | '
-         'status [--date YYYY-MM-DD] | setup-start | setup-complete')
+         'monthly [--date YYYY-MM-DD] | status [--date YYYY-MM-DD] | '
+         'setup-start | setup-complete')
 
 def connect(path):
     c = sqlite3.connect(path, isolation_level=None)
@@ -129,16 +130,15 @@ def record(c, today):
         except sqlite3.Error: pass
         raise
 
-def later(c, today):
-    """Maybe later, remind me monthly, or a dismissed prompt. Starts a 30-day gap."""
+def _choose(c, today, cadence, reason):
     c.execute('BEGIN IMMEDIATE')
     try:
         st = _read(c)
-        st['cadence_days'] = MONTH
+        st['cadence_days'] = cadence
         st['last_shown'] = today
         st['show'] = False
-        st['reason'] = 'later'
-        _put(c, 'cadence_days', str(MONTH))
+        st['reason'] = reason
+        _put(c, 'cadence_days', str(cadence))
         _put(c, 'last_shown', today.isoformat())
         c.execute('COMMIT')
         return st
@@ -146,6 +146,14 @@ def later(c, today):
         try: c.execute('ROLLBACK')
         except sqlite3.Error: pass
         raise
+
+def later(c, today):
+    """Maybe later. Keeps the 7-day cadence so the prompt can show again next week."""
+    return _choose(c, today, WEEK, 'later')
+
+def monthly(c, today):
+    """Remind me monthly, or the prompt was dismissed without a choice. At most once every 30 days."""
+    return _choose(c, today, MONTH, 'monthly')
 
 def status(c, today):
     st = _read(c)
@@ -170,6 +178,7 @@ def setup_complete(c, today):
 COMMANDS = {
     'record': record,
     'later': later,
+    'monthly': monthly,
     'status': status,
     'setup-start': setup_start,
     'setup-complete': setup_complete,

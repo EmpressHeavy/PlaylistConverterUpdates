@@ -5,7 +5,9 @@ The PNGs are committed. Playlist Converter shows stripe.png and links the other 
 """
 import os, sys
 PROMPT = "Wow you seem to be using Playlist Converter a lot lately! Would you mind sending my creator a tip? \U0001fa99"
-BUTTON = "Maybe later"
+BUTTONS = ("Maybe later", "Remind me monthly")
+LATER_REPLY = "No problem. I'll mention it again next week. Playlist Converter stays free."
+MONTHLY_REPLY = "No problem. I'll mention it again in about a month. Playlist Converter stays free."
 # (filename, label, url encoded in the QR). X Money's visible handle is not a second URL.
 HANDLE = "@HeavyMetalShip"
 LINKS = [
