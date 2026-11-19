@@ -26,7 +26,7 @@ Saved as `mem fact owner default_destination "<answer>"`; still confirmed every 
 "I keep a private backup of my memory in a private repo in your own GitHub account, so nothing is lost if my computer is reset. Connect GitHub and I'll set it up. I never see your password." Buttons: Connect GitHub / Not now.
 
 ## Hive Mind offer (default off)
-Exact text in `skills/hive-mind/SKILL.md` ("First-run offer").
+Exact text in `skills/playlist-hive-mind/SKILL.md` ("First-run offer").
 
 ## First conversion prompt
 "Paste the link to the first playlist you'd like copied."

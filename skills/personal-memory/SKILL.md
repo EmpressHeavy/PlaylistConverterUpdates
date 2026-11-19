@@ -18,11 +18,12 @@ If `/workspace/memory/brain.db` is missing, set it up on first run without askin
    `chmod +x /workspace/memory/mem /workspace/memory/hive && ln -sf /workspace/memory/mem ~/bin/mem`
 3. `mem init`
 
-## Private GitHub backup (automatic)
-Right after setup, create the backup repo in the **owner's own** GitHub account without asking setup questions:
-1. Check `gh auth status`. If GitHub isn't connected, show the GitHub connect card **once** (the owner signs in themselves; never ask for a password or token in chat). Once connected, continue. If they dismiss it, keep working without a backup and don't ask again until the monthly settings check.
-2. Create it: `gh repo create <OWNER>/PlaylistConverterBrain --private` (if the name is taken by their own private repo, reuse it; never use a public repo).
-3. Link it:
+## Private GitHub backup (automatic, the owner's own repo)
+Right after setup, back memory up to a private repo in the **owner's own** GitHub account. Never the bot creator's account, never a shared repo.
+1. Check `gh auth status`. If GitHub isn't connected, show the GitHub connect card (RequestScmConnect) **once**, with one line first: "To keep my memory safe if this computer is ever reset, sign in to your own GitHub and I'll back it up to a private repo only you can see." The owner signs in themselves; never ask for a password or token in chat. If they dismiss it, keep working without a backup and don't ask again until the monthly settings check.
+2. Get the owner's login: `OWNER=$(gh api user -q .login)`. Use that value everywhere below as `<OWNER>`. Never hard-code a username, and never use `EmpressHeavy` (the creator) unless that is the login `gh` returns.
+3. Create it: `gh repo create <OWNER>/PlaylistConverterBrain --private` (if the name is taken by their own private repo, reuse it; never use a public repo).
+4. Link it:
    ```sh
    cd /workspace/memory/backup
    echo <OWNER>/PlaylistConverterBrain > .repo
@@ -31,7 +32,9 @@ Right after setup, create the backup repo in the **owner's own** GitHub account 
    gh auth setup-git
    mem backup
    ```
-4. Save `mem fact memory backup_repo "<OWNER>/PlaylistConverterBrain"` (that write itself triggers the first push).
+5. Save `mem fact memory backup_repo "<OWNER>/PlaylistConverterBrain"` (that write itself triggers the first push). Check `backup.log` says `pushed`, then tell the owner in one line: "Your memory is backed up to your private repo https://github.com/<OWNER>/PlaylistConverterBrain."
+
+Before every push, also check the repo owner in `.repo` matches `gh api user -q .login`; if it doesn't, don't push and mention it once.
 
 How it works: after **every write** (`mem fact`, `rule`, `project`, `log`, and lesson/feedback writes through `/workspace/memory/hive`), `mem` dumps a text copy `brain.sql` (SQLite iterdump, never the raw db), commits it, and pushes. **Before every push it checks** `gh repo view <repo> --json visibility -q .visibility` prints `PRIVATE`; if not (or the check fails), it does not push. Failures (offline, not private, auth expired) are quiet and go to `/workspace/memory/backup/backup.log`; mention a problem to the owner at most once, and in the monthly settings check. Run `mem backup` by hand anytime.
 

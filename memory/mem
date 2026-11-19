@@ -16,6 +16,8 @@ def backup():
     if not r or not os.path.isdir(os.path.join(BK,'.git')):L('dumped; no repo configured');return
     v=subprocess.run(['gh','repo','view',r,'--json','visibility','-q','.visibility'],capture_output=True,text=True,timeout=30).stdout.strip()
     if v!='PRIVATE':L('NOT pushed: visibility='+repr(v));return
+    me=subprocess.run(['gh','api','user','-q','.login'],capture_output=True,text=True,timeout=30).stdout.strip()
+    if not me or r.split('/')[0].lower()!=me.lower():L('NOT pushed: repo owner '+repr(r.split('/')[0])+' is not the signed-in GitHub user '+repr(me));return
     g=lambda *x:subprocess.run(['git','-C',BK]+list(x),capture_output=True,text=True,timeout=60)
     g('add','brain.sql')
     if g('diff','--cached','--quiet').returncode==0:L('no change');return

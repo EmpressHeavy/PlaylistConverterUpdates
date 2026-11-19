@@ -13,7 +13,7 @@ The counter lives in the owner's existing `brain.db` (`tip_state`): completed-co
 | Remind me monthly / dismiss | `tip monthly` switches to at most once every 30 days. Dismissing without picking a button does this too. There is no "Don't ask again" and no permanent opt-out. |
 | First-run setup | `tip setup-start` hides the prompt. `tip setup-complete` lifts that. A missing flag counts as finished, so an upgrade is not stuck in setup. |
 
-`tip record` does not use the network and does not push the memory backup. Install steps: `skills/tip-prompt/SKILL.md`. Verbatim prompt: `docs/tip-prompt.md`.
+`tip record` does not use the network and does not push the memory backup. Install steps: `skills/playlist-tip-prompt/SKILL.md`. Verbatim prompt: `docs/tip-prompt.md`.
 
 QR PNGs in `qr/` are pre-generated (Stripe, Cash App, Venmo, X Money). The prompt shows the Stripe code and links the other three as well. Regenerate with `python3 tip/generate_qr.py` if a link changes. The bot does not run that script.
 

@@ -1,5 +1,5 @@
 ---
-name: hive-mind
+name: playlist-hive-mind
 description: Optional, anonymous sharing of this bot's most useful lessons so future versions of the bot get smarter. Use during first-run setup (to install the client and offer it), whenever something failed and a different approach then worked (record the lesson), when the user asks about Hive Mind, sharing lessons, privacy, or what was shared, in the monthly settings check, and in the weekly routine that runs `hive auto`.
 ---
 # Hive Mind (opt-in lesson sharing)

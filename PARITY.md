@@ -7,9 +7,9 @@
 | Playlist conversion method | `skills/playlist-conversion/SKILL.md` |
 | First-run setup and cards | `skills/getting-started/SKILL.md`, `docs/setup-cards.md` |
 | Private memory + auto GitHub backup | `skills/personal-memory/SKILL.md`, `memory/mem`, `memory/hive` |
-| Hive Mind (send-only, opt-in, bot code pc) | `skills/hive-mind/SKILL.md`, `hive/hive.py`, `hive/README.md` |
+| Hive Mind (send-only, opt-in, bot code pc) | `skills/playlist-hive-mind/SKILL.md`, `hive/hive.py`, `hive/README.md` |
 | Routines and prompts | `routines/routines.md`, `routines/routine-prompts.md`, `routines/weekly-update-check.md` |
-| Tip prompt (local counter, cadence, QR) | `skills/tip-prompt/SKILL.md`, `docs/tip-prompt.md`, `tip/tip.py`, `memory/tip`, `tip/qr/` |
+| Tip prompt (local counter, cadence, QR) | `skills/playlist-tip-prompt/SKILL.md`, `docs/tip-prompt.md`, `tip/tip.py`, `memory/tip`, `tip/qr/` |
 | Safety rules | `docs/safety.md`, `UPGRADE.md` guardrails |
 | Upgrade procedure | `UPGRADE.md` |
 | Version | `VERSION`, `CHANGELOG.md` |
