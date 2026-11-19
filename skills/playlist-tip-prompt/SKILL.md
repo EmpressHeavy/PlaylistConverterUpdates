@@ -1,5 +1,5 @@
 ---
-name: tip-prompt
+name: playlist-tip-prompt
 description: >-
   Use right after a successful playlist conversion summary, and when installing
   the local tip counter. Decides whether to show the optional creator tip

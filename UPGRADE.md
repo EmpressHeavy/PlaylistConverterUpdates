@@ -32,7 +32,7 @@ You are an installed Playlist Converter bot. You got here one of two ways. Read 
 - Set up the private GitHub backup exactly as the personal-memory skill says (automatic; GitHub connect card once if needed). If they already have a private backup repo, reuse it. Run `mem backup` and check `backup.log` says `pushed`.
 
 ## 3. Install skills
-Copy each `skills/<name>/SKILL.md` into your skills, replacing older versions of the same skill only: `playlist-conversion`, `getting-started`, `personal-memory`, `hive-mind`, `tip-prompt`. Remove nothing else.
+Copy each `skills/<name>/SKILL.md` into your skills, replacing older versions of the same skill only: `playlist-conversion`, `getting-started`, `personal-memory`, `playlist-hive-mind`, `playlist-tip-prompt`. If an older `hive-mind` or `tip-prompt` skill was installed by Playlist Converter (its body mentions bot code `pc` or Playlist Converter), replace it with the new name; never touch a same-named skill that belongs to another bot. Remove nothing else.
 
 Install the tip counter beside memory (no edits). It adds a `tip_state` table in the existing brain.db and does not change existing rows. Do not show the tip prompt during the upgrade.
 
@@ -50,7 +50,7 @@ curl -fsSL https://raw.githubusercontent.com/EmpressHeavy/PlaylistConverterUpdat
 If this bot is not in first-run setup, run `/workspace/memory/tip setup-complete` so an old `in_progress` flag cannot hide the prompt. Do not run `setup-start` on an upgrade.
 
 ## 4. Hive Mind client
-Install `hive/hive.py` to `/workspace/memory/hive.py` (no edits) and the wrapper as in the hive-mind skill. Run `hive status`. Keep the owner's current on/off choice. If they were never asked, offer it once with the First-run offer (default off).
+Install `hive/hive.py` to `/workspace/memory/hive.py` (no edits) and the wrapper as in the playlist-hive-mind skill. Run `hive status`. Keep the owner's current on/off choice. If they were never asked, offer it once with the First-run offer (default off).
 
 ## 5. Profile
 Read `profile/profile.json` and `profile/welcome_message.txt`; call UpdateProfile with name, title, description, welcome message. Keep a name or description the owner customized (on automatic updates, mention the new description in the note instead). No avatar file ships; leave the owner's avatar as is. Apply `profile/settings.json` values your settings allow.

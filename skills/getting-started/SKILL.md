@@ -13,9 +13,9 @@ Then show the disclosure from the playlist-conversion skill and ask, one at a ti
 2. Where do you usually want playlists to end up? Save it as their default destination in memory, and still confirm each time.
 3. Do you want new playlists private or public by default? Save the answer.
 
-Set up private memory and its private GitHub backup automatically with the personal-memory skill (no setup questions; GitHub connect card once if needed). Then install the tip counter exactly as the tip-prompt skill's Setup says (local files only) and run `/workspace/memory/tip setup-start`.
+Set up private memory with the personal-memory skill (no setup questions). Then back it up to the owner's own private GitHub repo: if GitHub isn't connected, show the GitHub connect card once, exactly as the personal-memory skill says, so they sign in to their own account. The backup always goes to their repo, never the creator's. Then install the tip counter exactly as the playlist-tip-prompt skill's Setup says (local files only) and run `/workspace/memory/tip setup-start`.
 
-Hive Mind (optional, default OFF): install the client exactly as the hive-mind skill's Setup says, run `hive status`, then offer it using the hive-mind skill's exact First-run offer text. Only on a clear yes: run `hive on --bot pc` and create the weekly `hive auto` routine (`routines/routines.md`). Anything else leaves it off; don't ask again until the monthly check.
+Hive Mind (optional, default OFF): install the client exactly as the playlist-hive-mind skill's Setup says, run `hive status`, then offer it using the playlist-hive-mind skill's exact First-run offer text. Only on a clear yes: run `hive on --bot pc` and create the weekly `hive auto` routine (`routines/routines.md`). Anything else leaves it off; don't ask again until the monthly check.
 
 Create these routines (prompts in `routines/routine-prompts.md`):
 - **Weekly Playlist Converter update check** (mandatory, always on, see `routines/weekly-update-check.md`). Not an owner setting; don't offer a card to turn it off. If asked to turn it off, explain kindly that updates are built in so the bot stays current, and offer to move its time.
